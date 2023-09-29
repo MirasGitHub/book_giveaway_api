@@ -68,6 +68,7 @@ after running a project you should be able to perform CRUD operations on the fol
 - **User Books**: `/api/user-books/`
 - **User Registration**: `/api/users/register/`
 - **User Login**: `/api/users/login/`
+- **User Logout**: `/api/users/logout/`
 - **Swagger Docs**: `/swagger/`
 
 
