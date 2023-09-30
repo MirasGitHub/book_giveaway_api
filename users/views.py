@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, logout, login
+from rest_registration.api.views import register_email
 
 from users.serializers import UserSerializer
 
@@ -11,7 +12,7 @@ from users.serializers import UserSerializer
 @api_view(['POST'])
 def UserRegistrationView(request):
     if request.user.is_authenticated:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "you need to logout first"})
     serializer = UserSerializer(data=request.data)
 
     if serializer.is_valid():
@@ -25,14 +26,17 @@ def UserRegistrationView(request):
 class UserLoginView(APIView):
     def post(self, request):
         if request.user.is_authenticated:
-            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error":"You are already logged in!"})
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "You are already logged in!"})
+        email = request.data.get('email')
         username = request.data.get('username')
         password = request.data.get('password')
-        user = authenticate(username=username, password=password)
+
+        user = authenticate(email=email, username=username, password=password)
 
         if user:
             login(request, user)
-            return Response(data={"message": "You successfully logged in", "data": f'{UserSerializer(user).data}'}, status=status.HTTP_200_OK)
+            return Response(data={"message": "You successfully logged in", "data": f'{UserSerializer(user).data}'},
+                            status=status.HTTP_200_OK)
 
         return Response({'error': "Wrong Credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
