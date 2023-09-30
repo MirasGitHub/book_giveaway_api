@@ -4,7 +4,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, logout, login
-from rest_registration.api.views import register_email
 
 from users.serializers import UserSerializer
 
@@ -31,11 +30,11 @@ class UserLoginView(APIView):
         username = request.data.get('username')
         password = request.data.get('password')
 
-        user = authenticate(email=email, username=username, password=password)
+        user = authenticate(email=email, password=password, username=username)
 
         if user:
             login(request, user)
-            return Response(data={"message": "You successfully logged in", "data": f'{UserSerializer(user).data}'},
+            return Response(data={"message": "You successfully logged in"},
                             status=status.HTTP_200_OK)
 
         return Response({'error': "Wrong Credentials"}, status=status.HTTP_400_BAD_REQUEST)
