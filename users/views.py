@@ -28,7 +28,9 @@ class UserLoginView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST, data={"error":"You are already logged in!"})
         username = request.data.get('username')
         password = request.data.get('password')
-        user = authenticate(username=username, password=password)
+        email = request.data.get('email')
+
+        user = authenticate(username=username, password=password, email=email)
 
         if user:
             login(request, user)
