@@ -45,7 +45,6 @@ class BookViewSet(BasePermissionViewSet):
 
         if user.is_authenticated:
             return Book.objects.filter(Q(is_available=True) | Q(owner=user))
-            # return Book.objects.filter(is_available=True) | Book.objects.filter(owner=self.request.user)
         else:
             return Book.objects.filter(is_available=True)
 
