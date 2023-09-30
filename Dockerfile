@@ -1,15 +1,14 @@
 FROM python:3.11
 
-RUN apt-get update \
-    && apt-get install -y -no-install-recommends \
-    && rm -rf /var/lib/apt/lists/*
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONBUFFERED 1
 
 
 WORKDIR /usr/src/app
 COPY requirements.txt ./
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-COPY ..
+COPY . /usr/src/app
 
 
 EXPOSE 8000
