@@ -1,5 +1,5 @@
-IMAGE_NAME ?= bookgiveaway
-CONTAINER_NAME ?= bookgiveaway_container
+IMAGE_NAME ?= book-giveaway-api
+CONTAINER_NAME ?= book-giveaway-api-container
 PORT ?= 8000
 
 
