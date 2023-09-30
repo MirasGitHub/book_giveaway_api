@@ -5,6 +5,7 @@ from django.db.models import Q
 from rest_framework import viewsets, filters, status, permissions
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -37,7 +38,7 @@ class BookViewSet(BasePermissionViewSet):
     filter_backends = (filters.OrderingFilter, SearchFilter)
     filterset_class = BookFilter
     ordering_fields = ['author', 'id', 'condition', 'title', 'location', 'owner', 'genre']
-    search_fields = ['location', 'title', 'author__name', "condition__name", 'genre__name', 'is_available']
+    search_fields = ['location', 'title', 'author__name', "condition__name", 'genre__name', 'is_available', 'owner__username']
 
     def get_queryset(self):
         user = self.request.user
@@ -166,3 +167,18 @@ class BookDetailView(APIView):
         book.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class BookImageUploadView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, *args, **kwargs):
+        book_id = kwargs.get('pk')
+        book = Book.objects.get(pk=book_id)
+
+        file_serializer = BookSerializer(data=request.data)
+        if file_serializer.is_valid():
+            file_serializer.save(book=book)
+            return Response(file_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
