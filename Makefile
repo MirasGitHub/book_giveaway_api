@@ -4,7 +4,7 @@ PORT ?= 8000
 
 
 build:
-	docker build -t $(IMAGE_NAME)
+	docker buildx build -t $(IMAGE_NAME) .
 
 run:
 	docker run -p 127.0.0.1:$(PORT):$(PORT) $(IMAGE_NAME)
