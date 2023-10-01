@@ -1,8 +1,6 @@
-import django_filters
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
 from django.db.models import Q
-from rest_framework import viewsets, filters, status, permissions
+from rest_framework import filters, status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -45,8 +43,7 @@ class BookViewSet(BasePermissionViewSet):
 
         if user.is_authenticated:
             return Book.objects.filter(Q(is_available=True) | Q(owner=user))
-        else:
-            return Book.objects.filter(is_available=True)
+        return Book.objects.filter(is_available=True)
 
     def update(self, request, *args, **kwargs):
         book = self.get_object()
@@ -58,14 +55,14 @@ class BookViewSet(BasePermissionViewSet):
         return super().update(request, *args, **kwargs)
 
     def perform_book_deletion(self, request, book):
-        if book.owner != request.user:
-            return Response({"detail": "You do not have permission to perform this action."},
-                            status=status.HTTP_403_FORBIDDEN)
         book.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def destroy(self, request, *args, **kwargs):
         book = self.get_object()
+        if book.owner != request.user:
+            return Response({"error": "You do not have permission to perform this action, as you're not the owner of this book!"},
+                            status=status.HTTP_403_FORBIDDEN)
         self.perform_book_deletion(request, book)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -87,6 +84,9 @@ class BookViewSet(BasePermissionViewSet):
         if book.owner == request.user:
             return Response({'message': 'You are the owner of this book. Owners cannot express interest.'},
                             status=status.HTTP_403_FORBIDDEN)
+
+        if not book.is_offered:
+            return Response({'message': "Currently, the book is not offered for free"})
 
         if request.user.is_authenticated:
             book.interested_users.add(request.user)
@@ -163,8 +163,8 @@ class BookDetailView(APIView):
 
     def delete(self, request, pk):
         book = get_object_or_404(Book, pk=pk)
-        book.delete()
 
+        book.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

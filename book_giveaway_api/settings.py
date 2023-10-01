@@ -87,6 +87,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'book_giveaway_api.wsgi.application'
 
 
