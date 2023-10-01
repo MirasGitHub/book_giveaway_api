@@ -5,7 +5,7 @@ from .views import UserRegistrationView, UserLoginView, UserLogoutView
 
 urlpatterns = [
     # Other endpoints
-    path('register/', UserRegistrationView, name='user-register'),
+    path('register/', UserRegistrationView.as_view(), name='user-register'),
     path('login/', UserLoginView.as_view(), name='user-login'),
     path('logout/', UserLogoutView.as_view(), name='user-logout'),
 ]
