@@ -15,7 +15,7 @@ router.register(r'user-books', UserBookViewSet, basename='user-books')
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('books/<int:pk>', BookDetailView.as_view(), name="book-detail"),
+    path('books/<int:pk>/', BookDetailView.as_view(), name="book-detail"),
     path('books/<int:pk>/upload/', BookImageUploadView.as_view(), name='book_image_upload'),
 ]
 

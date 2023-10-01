@@ -1,5 +1,5 @@
-IMAGE_NAME ?= book-giveaway-api
-CONTAINER_NAME ?= book-giveaway-api-container
+IMAGE_NAME ?= book_giveaway_api
+CONTAINER_NAME ?= book_giveaway_api_container
 PORT ?= 8000
 
 
@@ -13,16 +13,16 @@ shell:
 	docker exec -it $(CONTAINER_NAME) django-admin shell
 
 migrations:
-	docker exec -it $(CONTAINER_NAME) python3 manage.py makemigrations
+	docker exec -it $(CONTAINER_NAME) python manage.py makemigrations
 
 migrate:
-	docker exec -it $(CONTAINER_NAME) python3 manage.py migrate
+	docker exec -it $(CONTAINER_NAME) python manage.py migrate
 
 createsuperuser:
-	docker exec -it $(CONTAINER_NAME) python3 manage.py createsuperuser
+	docker exec -it $(CONTAINER_NAME) python manage.py createsuperuser
 
 populate_db:
-	docker exec -it $(CONTAINER_NAME) python3 manage.py runscript populate_database
+	docker exec -it $(CONTAINER_NAME) python manage.py runscript populate_database
 
 stop:
 	docker stop $(CONTAINER_NAME)
